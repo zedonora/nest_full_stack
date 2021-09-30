@@ -1,0 +1,82 @@
+# TODO
+
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx_image
+    restart: always
+    ports:
+      - 80:80
+    networks:
+      - core_network
+    volumes:
+      # - ./my_local_app:/srv/app_server
+      - nginx_log_volume:/var/log/nginx
+    depends_on:
+      - portainer
+      - testapp
+      - pgadmin
+
+  testapp:
+    image: testapp_image
+    restart: always
+    networks:
+      - core_network
+    environment:
+      POSTGRES_PORT: "localhost"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "nestjs"
+      NODE_ENV: "prod"
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    networks:
+      - core_network
+    ports:
+      - "5432:5432"
+    volumes:
+      - /data/postgres:/data/postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: nestjs
+    restart: always
+
+  pgadmin:
+    links:
+      - postgres:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    networks:
+      - core_network
+    ports:
+      - "8080:80"
+    volumes:
+      - /data/pgadmin:/root/.pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    networks:
+      - postgres
+    restart: always
+
+  portainer:
+    image: portainer/portainer-ce:alpine
+    restart: always
+    networks:
+      - core_network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_volume:/data
+
+volumes:
+  nginx_log_volume:
+  portainer_volume:
+
+networks:
+  core_network:

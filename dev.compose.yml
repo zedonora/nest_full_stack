@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./dev.dockerfile
+    ports:
+      - 3000:3000
+    restart: always
+    volumes:
+      - ./frontend:/usr/app
+      - /usr/app/.next
+      - /usr/app/node_modules
+    env_file:
+      - ./env_files/frontend.dev.env
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./dev.dockerfile
+    ports:
+      - 8000:8000
+    restart: always
+    volumes:
+      - ./backend:/usr/app
+      - /usr/app/node_modules
+    env_file:
+      - ./env_files/backend.dev.env
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - /data/postgres:/data/postgres
+    env_file:
+      - ./env_files/postgres.dev.env
+    restart: always
+
+  pgadmin:
+    links:
+      - postgres:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - "7070:80"
+    volumes:
+      - /data/pgadmin:/root/.pgadmin
+    env_file:
+      - ./env_files/pgadmin.dev.env
+    networks:
+      - postgres
+    restart: always
+
+networks:
+  postgres:
+    driver: bridge
