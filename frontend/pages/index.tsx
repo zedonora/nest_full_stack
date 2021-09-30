@@ -18,7 +18,6 @@ const Home: NextPage = () => {
         </h1>
 
         <p className={styles.description}>
-          ㄴㄴㄴㅁㄴ어ㅏㅣㅁ나
           <code className={styles.code}>pages/index.js</code>
         </p>
 
