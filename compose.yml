@@ -24,11 +24,11 @@ services:
     networks:
       - core_network
     environment:
-      POSTGRES_PORT: "localhost"
-      POSTGRES_USER: "admin"
-      POSTGRES_PASSWORD: "admin"
-      POSTGRES_DB: "nestjs"
-      NODE_ENV: "prod"
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: frenv
+      NODE_ENV: prod
     depends_on:
       - postgres
 
@@ -42,9 +42,9 @@ services:
     volumes:
       - /data/postgres:/data/postgres
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: nestjs
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: frenv
     restart: always
 
   pgadmin:
@@ -59,8 +59,8 @@ services:
     volumes:
       - /data/pgadmin:/root/.pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: postgres@postgres.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
     networks:
       - postgres
     restart: always
