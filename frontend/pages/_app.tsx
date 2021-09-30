@@ -1,7 +1,19 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import { AppProps } from 'next/app';
+import * as React from 'react';
+
+import { AuthProvider } from '../services/Auth.context';
+import { GlobalMessagingProvider } from '../services/GlobalMessaging.context';
+
+import './global.scss';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <AuthProvider>
+      <GlobalMessagingProvider>
+        <Component {...pageProps} />
+      </GlobalMessagingProvider>
+    </AuthProvider>
+  );
 }
-export default MyApp
+
+export default MyApp;
